@@ -30,7 +30,6 @@ def filter_metrics(data):
         {'current': 'jvm/heap/max', 'name': 'jvm_heap_max', 'metric_type': 'gauge'},
         {'current': 'jvm/heap/used', 'name': 'jvm_heap_used', 'metric_type': 'gauge'},
         {'current': 'jvm/heap/committed', 'name': 'jvm_heap_committed', 'metric_type': 'gauge'},
-        # {'current': 'jvm/nonheap/max', 'name': 'jvm_noheap_max', 'metric_type': 'gauge'},
         {'current': 'jvm/nonheap/used', 'name': 'jvm_noheap_used', 'metric_type': 'gauge'},
         {'current': 'jvm/nonheap/committed', 'name': 'jvm_noheap_committed', 'metric_type': 'gauge'},
         {'current': 'jvm/thread/count', 'name': 'jvm_thread_count', 'metric_type': 'gauge'},
@@ -38,6 +37,26 @@ def filter_metrics(data):
         {'current': 'jvm/uptime', 'name': 'jvm_uptime', 'metric_type': 'counter'},
         {'current': 'jvm/gc/msec', 'name': 'jvm_gc_msec', 'metric_type': 'gauge'},
         ]
+
+    metric_keys_matching = [
+        {'current': 'srv/request_latency_ms.sum', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'sum'}},
+        {'current': 'srv/request_latency_ms.avg', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'avg'}},
+        {'current': 'srv/request_latency_ms.min', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'min'}},
+        {'current': 'srv/request_latency_ms.max', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'max'}},
+        {'current': 'srv/request_latency_ms.p90', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'p90'}},
+        {'current': 'srv/request_latency_ms.p95', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'p95'}},
+        {'current': 'srv/request_latency_ms.p99', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'p99'}},
+        {'current': 'srv/request_latency_ms.stddev', 'name': 'request_latency_ms', 'metric_type': 'gauge',
+            'label': {'latency': 'stddev'}},
+        ]
+
     for metric in metric_keys:
         if data.get(metric.get('current')):
             filtered.append({
@@ -45,6 +64,17 @@ def filter_metrics(data):
                 'value': data.get(metric['current']),
                 'orginal_metric_name': metric['current'],
                 'metric_type': metric['metric_type'],
+                'label': None
+                })
+
+    for metric in metric_keys_matching:
+        if data.get(metric.get('current')):
+            filtered.append({
+                'name': metric.get('name'),
+                'value': data.get(metric['current']),
+                'orginal_metric_name': metric['current'],
+                'metric_type': metric['metric_type'],
+                'label': metric['label']
                 })
 
     return filtered
@@ -82,6 +112,8 @@ class TwitterFinagleCollector(object):
             labels = {}
             labels.update(self._labels)
             labels.update({'orginal_metric_name': i['orginal_metric_name']})
+            if i.get('label'):
+                labels.update(i['label'])
 
             metric = Metric(i['name'], 'service metric', i['metric_type'])
             metric.add_sample(i['name'], value=i['value'], labels=labels)
