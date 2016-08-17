@@ -48,7 +48,7 @@ class TwitterFinagleCollector(object):
         self._set_labels()
 
     def _set_labels(self):
-        self._labels.update({'service': self._service})
+        self._labels.update({'service': self._service, 'source_type': 'finagle_server'})
 
     def collect(self):
         response_data = json.loads(requests.get(self._endpoint).content.decode('UTF-8'))
