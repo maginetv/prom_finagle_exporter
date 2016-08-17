@@ -1,0 +1,10 @@
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: v0.4.2
+    hooks:
+    -   id: flake8
+        args: [--max-line-length=130]
+-   repo: git@github.com:mad01/pre-commit-pep8
+    sha: 76b092d692c0eb632d186a92cf2d2fb4ee9a1ea7
+    hooks:
+    -   id: pep8
+        args: [--max-line-length=130]
