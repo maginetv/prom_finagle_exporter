@@ -23,28 +23,29 @@ def filter_metrics(data):
     filtered = []
 
     # <collect key> <new key>
-    metric_keys = {
-        'srv/requests': 'http_service_requests',
-        'srv/success': 'http_service_success',
-        'response_KO': 'http_response_ko',
-        'response_OK': 'http_response_ok',
-        'jvm_heap_max': 'jvm/heap/max',
-        'jvm_heap_used': 'jvm/heap/used',
-        'jvm_heap_committed': 'jvm/heap/committed',
-        'jvm_noheap_max': 'jvm/nonheap/max',
-        'jvm_noheap_used': 'jvm/nonheap/used',
-        'jvm_noheap_committed': 'jvm/nonheap/committed',
-        'jvm_thread_count': 'jvm/thread/count',
-        'jvm_mem_current_used': 'jvm/mem/current/used',
-        'jvm_uptime': 'jvm/uptime',
-        'jvm_gc_msec': 'jvm/gc/msec',
-        }
-    for k, v in metric_keys.items():
-        if data.get(k):
+    metric_keys = [
+        {'current': 'srv/requests', 'name': 'http_service_requests', 'metric_type': 'counter'},
+        {'current': 'srv/success', 'name': 'http_service_success', 'metric_type': 'counter'},
+        {'current': 'response_KO', 'name': 'http_response_ko', 'metric_type': 'counter'},
+        {'current': 'response_OK', 'name': 'http_response_ok', 'metric_type': 'counter'},
+        {'current': 'jvm/heap/max', 'name': 'jvm_heap_max', 'metric_type': 'gauge'},
+        {'current': 'jvm/heap/used', 'name': 'jvm_heap_used', 'metric_type': 'gauge'},
+        {'current': 'jvm/heap/committed', 'name': 'jvm_heap_committed', 'metric_type': 'gauge'},
+        # {'current': 'jvm/nonheap/max', 'name': 'jvm_noheap_max', 'metric_type': 'gauge'},
+        {'current': 'jvm/nonheap/used', 'name': 'jvm_noheap_used', 'metric_type': 'gauge'},
+        {'current': 'jvm/nonheap/committed', 'name': 'jvm_noheap_committed', 'metric_type': 'gauge'},
+        {'current': 'jvm/thread/count', 'name': 'jvm_thread_count', 'metric_type': 'gauge'},
+        {'current': 'jvm/mem/current/used', 'name': 'jvm_mem_current_used', 'metric_type': 'gauge'},
+        {'current': 'jvm/uptime', 'name': 'jvm_uptime', 'metric_type': 'counter'},
+        {'current': 'jvm/gc/msec', 'name': 'jvm_gc_msec', 'metric_type': 'gauge'},
+        ]
+    for metric in metric_keys:
+        if data.get(metric.get('current')):
             filtered.append({
-                'name': v,
-                'value': data.get(k),
-                'orginal_metric_name': k,
+                'name': metric.get('name'),
+                'value': data.get(metric['current']),
+                'orginal_metric_name': metric['current'],
+                'metric_type': metric['metric_type'],
                 })
 
     return filtered
@@ -70,7 +71,7 @@ class TwitterFinagleCollector(object):
             labels.update(self._labels)
             labels.update({'orginal_metric_name': i['orginal_metric_name']})
 
-            metric = Metric(i['name'], 'scala twitter http service metrics', 'counter')
+            metric = Metric(i['name'], 'service metric', i['metric_type'])
             metric.add_sample(i['name'], value=i['value'], labels=labels)
 
             yield metric
