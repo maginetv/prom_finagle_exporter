@@ -22,7 +22,6 @@ import time
 def filter_metrics(data):
     filtered = []
 
-    # <collect key> <new key>
     metric_keys = [
         {'current': 'srv/requests', 'name': 'http_service_requests', 'metric_type': 'counter'},
         {'current': 'srv/success', 'name': 'http_service_success', 'metric_type': 'counter'},
@@ -62,8 +61,21 @@ class TwitterFinagleCollector(object):
         self._labels.update({'service': self._service, 'source_type': 'finagle_server'})
 
     def collect(self):
+        time_start = time.time()
         response_data = json.loads(requests.get(self._endpoint).content.decode('UTF-8'))
         metrics_list = filter_metrics(response_data)
+        time_stop = time.time()
+
+        scrape_duration_seconds = (time_stop - time_start)
+        time_labels = {}
+        time_labels.update(self._labels)
+        time_metric = Metric('scrape_duration', 'service metric', 'gauge')
+        time_metric.add_sample(
+            'finagle_exporter_scrape_duration_seconds',
+            value=scrape_duration_seconds,
+            labels=time_labels
+            )
+        yield time_metric
 
         # Counter metrics
         for i in metrics_list:
