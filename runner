@@ -1,0 +1,3 @@
+#!/bin/bash
+
+PYTHONPATH=. python3 prom_finagle_exporter/app.py "$@"
