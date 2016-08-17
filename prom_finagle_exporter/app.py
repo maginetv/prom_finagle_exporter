@@ -27,7 +27,17 @@ def filter_metrics(data):
         'srv/requests': 'http_service_requests',
         'srv/success': 'http_service_success',
         'response_KO': 'http_response_ko',
-        'response_OK': 'http_response_ok'
+        'response_OK': 'http_response_ok',
+        'jvm_heap_max': 'jvm/heap/max',
+        'jvm_heap_used': 'jvm/heap/used',
+        'jvm_heap_committed': 'jvm/heap/committed',
+        'jvm_noheap_max': 'jvm/nonheap/max',
+        'jvm_noheap_used': 'jvm/nonheap/used',
+        'jvm_noheap_committed': 'jvm/nonheap/committed',
+        'jvm_thread_count': 'jvm/thread/count',
+        'jvm_mem_current_used': 'jvm/mem/current/used',
+        'jvm_uptime': 'jvm/uptime',
+        'jvm_gc_msec': 'jvm/gc/msec',
         }
     for k, v in metric_keys.items():
         if data.get(k):
