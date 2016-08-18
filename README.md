@@ -3,8 +3,8 @@ prometheus twitter finagle metrics exporter
 
 
 ```bash
-./runner start --help
-Usage: runner start [OPTIONS]
+./finagle-exporter start --help
+Usage: finagle-exporter start [OPTIONS]
 
 Options:
   -s, --service TEXT  service name  [required]
@@ -15,7 +15,7 @@ Options:
 
 example 
 ```bash
-$ ./runner start \
+$ ./finagle-exporter start \
     --port 9161 \
     --url http://slave-i-135a18af.com1.eu-central-1.tvoli.com:15277/admin/metrics.json \
     --service nibble

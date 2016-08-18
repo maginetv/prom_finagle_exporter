@@ -31,4 +31,8 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 3.5',
         ],
+    entry_points={
+        'console_scripts': [
+            'finagle-exporter=prom_finagle_exporter.app:cli',
+        ]},
     )
