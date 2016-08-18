@@ -1,4 +1,9 @@
-from prometheus_client import REGISTRY, Metric, start_wsgi_server
+import prometheus_client
+from prometheus_client import Metric
+
+import falcon
+from wsgiref import simple_server
+
 import click
 import json
 import requests
@@ -136,6 +141,38 @@ class TwitterFinagleCollector(object):
             yield metric
 
 
+class metricHandler:
+    def __init__(self, url='', service=''):
+        self._service = service
+        self._url = url
+
+    def on_get(self, req, resp):
+        resp.set_header('Content-Type', prometheus_client.exposition.CONTENT_TYPE_LATEST)
+        registry = TwitterFinagleCollector(self._url, self._service)
+        collected_metric = prometheus_client.exposition.generate_latest(registry)
+        resp.body = collected_metric
+
+
+class healthHandler:
+    def __init__(self):
+        pass
+
+    def on_get(self, req, resp):
+        resp.body = '{"status": "OK"}'
+
+
+def falcon_app(url, service, port=9161, addr='0.0.0.0'):
+    api = falcon.API()
+    api.add_route('/health', healthHandler())
+    api.add_route('/', metricHandler(url=url, service=service))
+    httpd = simple_server.make_server(addr, port, api)
+    httpd.serve_forever()
+
+
+def announce_consul(host):
+    pass
+
+
 @click.group(help='')
 def cli():
     pass
@@ -145,14 +182,10 @@ def cli():
 @click.option('-s', '--service', help='service name', required=True, type=str)
 @click.option('-u', '--url', help='url to collect from', required=True, type=str)
 @click.option('-p', '--port', help='', required=True, type=int)
-def start(service, url, port):
+@click.option('-c', '--consul-host', help='', type=int)
+def start(service, url, port, consul_host):
     try:
-        REGISTRY.register(TwitterFinagleCollector(url, service))
-        start_wsgi_server(port, '0.0.0.0')
-
-        while True:
-            time.sleep(1)
-
+        falcon_app(url, service, port=port)
     except KeyboardInterrupt:
         print('Stopping')
 
