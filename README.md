@@ -17,6 +17,6 @@ example
 ```bash
 $ ./finagle-exporter start \
     --port 9161 \
-    --url http://slave-i-135a18af.com1.eu-central-1.tvoli.com:15277/admin/metrics.json \
+    --url http://example.com:15277/admin/metrics.json \
     --service nibble
 ```
