@@ -5,76 +5,95 @@ import requests
 import time
 
 
-"""
-    srv/request_latency_ms.sum: 1381,
-    srv/request_latency_ms.avg: 1.8738127544097694,
-    srv/request_latency_ms.min: 0,
-    srv/request_latency_ms.max: 53,
-    srv/request_latency_ms.stddev: 3.398711661520411,
-    srv/request_latency_ms.p90: 5,
-    srv/request_latency_ms.p95: 9,
-    srv/request_latency_ms.p99: 12,
-    srv/requests
-    srv/success
-"""
-
-
-def filter_metrics(data):
-    filtered = []
-
-    metric_keys_matching = [
-        {'current': 'srv/requests', 'name': 'http_service_requests', 'metric_type': 'counter', 'label': {}},
-        {'current': 'srv/success', 'name': 'http_service_success', 'metric_type': 'counter', 'label': {}},
-
-        {'current': 'response_KO', 'name': 'http_response_ko', 'metric_type': 'counter', 'label': {}},
-        {'current': 'response_OK', 'name': 'http_response_ok', 'metric_type': 'counter', 'label': {}},
-
-        {'current': 'jvm/heap/max', 'name': 'jvm_heap', 'metric_type': 'gauge',
-            'label': {'heap_type': 'max'}},
-        {'current': 'jvm/heap/used', 'name': 'jvm_heap', 'metric_type': 'gauge',
-            'label': {'heap_type': 'used'}},
-        {'current': 'jvm/heap/committed', 'name': 'jvm_heap', 'metric_type': 'gauge',
-            'label': {'heap_type': 'committed'}},
-
-        {'current': 'jvm/nonheap/used', 'name': 'jvm_nonheap', 'metric_type': 'gauge',
-            'label': {'heap_type': 'used'}},
-        {'current': 'jvm/nonheap/committed', 'name': 'jvm_nonheap', 'metric_type': 'gauge',
-            'label': {'heap_type': 'committed'}},
-
-        {'current': 'jvm/thread/count', 'name': 'jvm_thread_count', 'metric_type': 'gauge', 'label': {}},
-        {'current': 'jvm/mem/current/used', 'name': 'jvm_mem_current_used', 'metric_type': 'gauge', 'label': {}},
-        {'current': 'jvm/uptime', 'name': 'jvm_uptime', 'metric_type': 'counter', 'label': {}},
-        {'current': 'jvm/gc/msec', 'name': 'jvm_gc_msec', 'metric_type': 'gauge', 'label': {}},
-
-        {'current': 'srv/request_latency_ms.sum', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'sum'}},
-        {'current': 'srv/request_latency_ms.avg', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'avg'}},
-        {'current': 'srv/request_latency_ms.min', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'min'}},
-        {'current': 'srv/request_latency_ms.max', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'max'}},
-        {'current': 'srv/request_latency_ms.p90', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'p90'}},
-        {'current': 'srv/request_latency_ms.p95', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'p95'}},
-        {'current': 'srv/request_latency_ms.p99', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'p99'}},
-        {'current': 'srv/request_latency_ms.stddev', 'name': 'request_latency_ms', 'metric_type': 'gauge',
-            'label': {'latency': 'stddev'}},
+metric_collect = [
+    {
+        'name': 'http_service_requests',
+        'metric_type': 'counter',
+        'collect': [
+            {'metric_name': 'srv/requests', 'label': {}},
         ]
-
-    for metric in metric_keys_matching:
-        if data.get(metric.get('current')):
-            filtered.append({
-                'name': metric.get('name'),
-                'value': data.get(metric['current']),
-                'orginal_metric_name': metric['current'],
-                'metric_type': metric['metric_type'],
-                'label': metric['label']
-                })
-
-    return filtered
+    },
+    {
+        'name': 'http_service_success',
+        'metric_type': 'counter',
+        'collect': [
+            {'metric_name': 'srv/success', 'label': {}},
+        ]
+    },
+    {
+        'name': 'http_response_ko',
+        'metric_type': 'counter',
+        'collect': [
+            {'metric_name': 'response_KO', 'label': {}},
+        ]
+    },
+    {
+        'name': 'http_response_ok',
+        'metric_type': 'counter',
+        'collect': [
+            {'metric_name': 'response_OK', 'label': {}},
+        ]
+    },
+    {
+        'name': 'jvm_heap',
+        'metric_type': 'gauge',
+        'collect': [
+            {'metric_name': 'jvm/heap/max', 'label': {'heap_type': 'max'}},
+            {'metric_name': 'jvm/heap/used', 'label': {'heap_type': 'used'}},
+            {'metric_name': 'jvm/heap/committed', 'label': {'heap_type': 'committed'}},
+        ]
+    },
+    {
+        'name': 'jvm_nonheap',
+        'metric_type': 'gauge',
+        'collect': [
+            {'metric_name': 'jvm/nonheap/used', 'label': {'heap_type': 'used'}},
+            {'metric_name': 'jvm/nonheap/committed', 'label': {'heap_type': 'committed'}},
+        ]
+    },
+    {
+        'name': 'jvm_thread_count',
+        'metric_type': 'gauge',
+        'collect': [
+            {'metric_name': 'jvm/thread/count', 'label': {}},
+        ]
+    },
+    {
+        'name': 'jvm_mem_current_used',
+        'metric_type': 'gauge',
+        'collect': [
+            {'metric_name': 'jvm/mem/current/used', 'label': {}},
+        ]
+    },
+    {
+        'name': 'jvm_uptime',
+        'metric_type': 'counter',
+        'collect': [
+            {'metric_name': 'jvm/uptime', 'label': {}},
+        ]
+    },
+    {
+        'name': 'jvm_gc_msec',
+        'metric_type': 'gauge',
+        'collect': [
+            {'metric_name': 'jvm/gc/msec', 'label': {}},
+        ]
+    },
+    {
+        'name': 'http_request_latency_ms',
+        'metric_type': 'gauge',
+        'collect': [
+            {'metric_name': 'srv/request_latency_ms.sum', 'label': {'latency': 'sum'}},
+            {'metric_name': 'srv/request_latency_ms.avg', 'label': {'latency': 'avg'}},
+            {'metric_name': 'srv/request_latency_ms.min', 'label': {'latency': 'min'}},
+            {'metric_name': 'srv/request_latency_ms.max', 'label': {'latency': 'max'}},
+            {'metric_name': 'srv/request_latency_ms.p90', 'label': {'latency': 'p90'}},
+            {'metric_name': 'srv/request_latency_ms.p95', 'label': {'latency': 'p95'}},
+            {'metric_name': 'srv/request_latency_ms.p99', 'label': {'latency': 'p99'}},
+            {'metric_name': 'srv/request_latency_ms.stddev', 'label': {'latency': 'stddev'}},
+        ]
+    },
+]
 
 
 class TwitterFinagleCollector(object):
@@ -89,8 +108,7 @@ class TwitterFinagleCollector(object):
 
     def collect(self):
         time_start = time.time()
-        response_data = json.loads(requests.get(self._endpoint).content.decode('UTF-8'))
-        metrics_list = filter_metrics(response_data)
+        response = json.loads(requests.get(self._endpoint).content.decode('UTF-8'))
         time_stop = time.time()
 
         scrape_duration_seconds = (time_stop - time_start)
@@ -104,16 +122,16 @@ class TwitterFinagleCollector(object):
             )
         yield time_metric
 
-        # Counter metrics
-        for i in metrics_list:
-            labels = {}
-            labels.update(self._labels)
-            labels.update({'orginal_metric_name': i['orginal_metric_name']})
-            if i.get('label'):
-                labels.update(i['label'])
+        for i in metric_collect:
+            metric = Metric(i['name'], i['name'], i['metric_type'])
 
-            metric = Metric(i['name'], '', i['metric_type'])
-            metric.add_sample(i['name'], value=i['value'], labels=labels)
+            for m in i['collect']:
+                labels = {}
+                labels.update(self._labels)
+                labels.update({'original_metric': m['metric_name']})
+                if m.get('label'):
+                    labels.update(m['label'])
+                metric.add_sample(i['name'], value=response[m['metric_name']], labels=labels)
 
             yield metric
 
