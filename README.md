@@ -15,5 +15,8 @@ Options:
 
 example 
 ```bash
-$ ./runner start -p 9161 -u http://slave-i-135a18af.com1.eu-central-1.tvoli.com:15277/admin/metrics.json -s nibble
+$ ./runner start \
+    --port 9161 \
+    --url http://slave-i-135a18af.com1.eu-central-1.tvoli.com:15277/admin/metrics.json \
+    --service nibble
 ```
