@@ -7,35 +7,35 @@ import time
 
 metric_collect = [
     {
-        'name': 'http_service_requests',
+        'name': 'finagle_exporter_http_service_requests',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'srv/requests', 'label': {}},
         ]
     },
     {
-        'name': 'http_service_success',
+        'name': 'finagle_exporter_http_service_success',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'srv/success', 'label': {}},
         ]
     },
     {
-        'name': 'http_response_ko',
+        'name': 'finagle_exporter_http_response_ko',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'response_KO', 'label': {}},
         ]
     },
     {
-        'name': 'http_response_ok',
+        'name': 'finagle_exporter_http_response_ok',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'response_OK', 'label': {}},
         ]
     },
     {
-        'name': 'jvm_heap',
+        'name': 'finagle_exporter_jvm_heap',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/heap/max', 'label': {'heap_type': 'max'}},
@@ -44,7 +44,7 @@ metric_collect = [
         ]
     },
     {
-        'name': 'jvm_nonheap',
+        'name': 'finagle_exporter_jvm_nonheap',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/nonheap/used', 'label': {'heap_type': 'used'}},
@@ -52,35 +52,35 @@ metric_collect = [
         ]
     },
     {
-        'name': 'jvm_thread_count',
+        'name': 'finagle_exporter_jvm_thread_count',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/thread/count', 'label': {}},
         ]
     },
     {
-        'name': 'jvm_mem_current_used',
+        'name': 'finagle_exporter_jvm_mem_current_used',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/mem/current/used', 'label': {}},
         ]
     },
     {
-        'name': 'jvm_uptime',
+        'name': 'finagle_exporter_jvm_uptime',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'jvm/uptime', 'label': {}},
         ]
     },
     {
-        'name': 'jvm_gc_msec',
+        'name': 'finagle_exporter_jvm_gc_msec',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/gc/msec', 'label': {}},
         ]
     },
     {
-        'name': 'http_request_latency_ms',
+        'name': 'finagle_exporter_http_request_latency_ms',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'srv/request_latency_ms.sum', 'label': {'latency': 'sum'}},
