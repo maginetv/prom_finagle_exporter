@@ -2,12 +2,15 @@ import prometheus_client
 from prometheus_client import Metric
 
 import falcon
+import consul
 from wsgiref import simple_server
+
 
 import click
 import json
 import requests
 import time
+import socket
 
 
 metric_collect = [
@@ -165,12 +168,30 @@ def falcon_app(url, service, port=9161, addr='0.0.0.0'):
     api = falcon.API()
     api.add_route('/health', healthHandler())
     api.add_route('/', metricHandler(url=url, service=service))
+
     httpd = simple_server.make_server(addr, port, api)
     httpd.serve_forever()
 
 
-def announce_consul(host):
-    pass
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 80))
+    return s.getsockname()[0]
+
+
+def register_consul(host, port):
+    service_address = get_ip_address()
+    c = consul.Consul(host=host)
+    c.agent.service.register(
+        'finagle_exporter',
+        address=service_address,
+        port=port,
+        check={
+            "http": "http://{}:{}/health".format(service_address, port),
+            "interval": "10s",
+            "timeout": "1s"
+            }
+        )
 
 
 @click.group(help='')
@@ -182,12 +203,12 @@ def cli():
 @click.option('-s', '--service', help='service name', required=True, type=str)
 @click.option('-u', '--url', help='url to collect from', required=True, type=str)
 @click.option('-p', '--port', help='', required=True, type=int)
-@click.option('-c', '--consul-host', help='', type=int)
+@click.option('-c', '--consul-host', help='', default='', type=str)
 def start(service, url, port, consul_host):
-    try:
-        falcon_app(url, service, port=port)
-    except KeyboardInterrupt:
-        print('Stopping')
+    if consul_host:
+        register_consul(consul_host, port)
+
+    falcon_app(url, service, port=port)
 
 
 cli.add_command(start)
