@@ -33,6 +33,6 @@ setup(
         ],
     entry_points={
         'console_scripts': [
-            'finagle-exporter=prom_finagle_exporter.app:cli',
+            'finagle-exporter=prom_finagle_exporter.main:cli',
         ]},
     )
