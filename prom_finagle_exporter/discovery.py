@@ -1,5 +1,6 @@
 import socket
 import consul
+from requests import ConnectionError
 
 
 def get_ip_address():
@@ -8,16 +9,33 @@ def get_ip_address():
     return s.getsockname()[0]
 
 
+def consul_conn_check(host):
+    c = consul.Consul(host=host)
+    state = False
+    try:
+        c.catalog.nodes()
+        state = True
+    except ConnectionError:
+        pass
+    finally:
+        return state
+
+
 def register_consul(host, port):
     service_address = get_ip_address()
-    c = consul.Consul(host=host)
-    c.agent.service.register(
-        'finagle_exporter',
-        address=service_address,
-        port=port,
-        check={
-            "http": "http://{}:{}/health".format(service_address, port),
-            "interval": "10s",
-            "timeout": "1s"
-            }
-        )
+    conn = consul_conn_check(host)
+    if conn:
+        c = consul.Consul(host=host)
+        result = c.agent.service.register(
+            'finagle_exporter',
+            address=service_address,
+            port=port,
+            check={
+                "http": "http://{}:{}/health".format(service_address, port),
+                "interval": "10s",
+                "timeout": "1s"
+                }
+            )
+        return result
+    else:
+        return False

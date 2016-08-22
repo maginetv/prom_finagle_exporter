@@ -7,13 +7,14 @@ from prom_finagle_exporter.prom import TwitterFinagleCollector
 
 
 class metricHandler:
-    def __init__(self, url='', service=''):
+    def __init__(self, url='', service='', exclude=list):
         self._service = service
         self._url = url
+        self._exclude = exclude
 
     def on_get(self, req, resp):
         resp.set_header('Content-Type', prometheus_client.exposition.CONTENT_TYPE_LATEST)
-        registry = TwitterFinagleCollector(self._url, self._service)
+        registry = TwitterFinagleCollector(self._url, self._service, exclude=self._exclude)
         collected_metric = prometheus_client.exposition.generate_latest(registry)
         resp.body = collected_metric
 
@@ -26,10 +27,10 @@ class healthHandler:
         resp.body = '{"status": "OK"}'
 
 
-def falcon_app(url, service, port=9161, addr='0.0.0.0'):
+def falcon_app(url, service, port=9161, addr='0.0.0.0', exclude=list):
     api = falcon.API()
     api.add_route('/health', healthHandler())
-    api.add_route('/', metricHandler(url=url, service=service))
+    api.add_route('/', metricHandler(url=url, service=service, exclude=exclude))
 
     httpd = simple_server.make_server(addr, port, api)
     httpd.serve_forever()

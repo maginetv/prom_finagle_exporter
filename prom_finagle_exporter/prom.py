@@ -97,14 +97,24 @@ metric_collect = [
 
 
 class TwitterFinagleCollector(object):
-    def __init__(self, endpoint, service):
+    def __init__(self, endpoint, service, exclude=list):
         self._endpoint = endpoint
         self._service = service
         self._labels = {}
         self._set_labels()
+        self._exclude = exclude
+        self._metric_collect = metric_collect
 
     def _set_labels(self):
         self._labels.update({'service': self._service, 'source_type': 'finagle_server'})
+
+    def filter_exclude(self):
+        self._metric_collect = list(
+            filter(lambda x: x.get('name') not in self._exclude, self._metric_collect)
+            )
+
+    def _get_metric_collect(self):
+        return self._metric_collect
 
     def collect(self):
         time_start = time.time()
@@ -122,7 +132,10 @@ class TwitterFinagleCollector(object):
             )
         yield time_metric
 
-        for i in metric_collect:
+        if self._exclude:
+            self.filter_exclude()
+
+        for i in self._metric_collect:
             metric = Metric(i['name'], i['name'], i['metric_type'])
 
             for m in i['collect']:
