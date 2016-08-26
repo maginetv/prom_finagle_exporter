@@ -7,35 +7,21 @@ import time
 
 metric_collect = [
     {
-        'name': 'finagle_exporter_http_service_requests',
+        'name': 'finigel_requests',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'srv/requests', 'label': {}},
         ]
     },
     {
-        'name': 'finagle_exporter_http_service_success',
+        'name': 'finigel_success',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'srv/success', 'label': {}},
         ]
     },
     {
-        'name': 'finagle_exporter_http_response_ko',
-        'metric_type': 'counter',
-        'collect': [
-            {'metric_name': 'response_KO', 'label': {}},
-        ]
-    },
-    {
-        'name': 'finagle_exporter_http_response_ok',
-        'metric_type': 'counter',
-        'collect': [
-            {'metric_name': 'response_OK', 'label': {}},
-        ]
-    },
-    {
-        'name': 'finagle_exporter_jvm_heap',
+        'name': 'finigel_jvm_heap',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/heap/max', 'label': {'heap_type': 'max'}},
@@ -44,7 +30,7 @@ metric_collect = [
         ]
     },
     {
-        'name': 'finagle_exporter_jvm_nonheap',
+        'name': 'finigel_jvm_nonheap',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/nonheap/used', 'label': {'heap_type': 'used'}},
@@ -52,35 +38,35 @@ metric_collect = [
         ]
     },
     {
-        'name': 'finagle_exporter_jvm_thread_count',
+        'name': 'finigel_jvm_thread_count',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/thread/count', 'label': {}},
         ]
     },
     {
-        'name': 'finagle_exporter_jvm_mem_current_used',
+        'name': 'finigel_jvm_mem_current_used',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/mem/current/used', 'label': {}},
         ]
     },
     {
-        'name': 'finagle_exporter_jvm_uptime',
+        'name': 'finigel_jvm_uptime',
         'metric_type': 'counter',
         'collect': [
             {'metric_name': 'jvm/uptime', 'label': {}},
         ]
     },
     {
-        'name': 'finagle_exporter_jvm_gc_msec',
+        'name': 'finigel_jvm_gc_msec',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'jvm/gc/msec', 'label': {}},
         ]
     },
     {
-        'name': 'finagle_exporter_http_request_latency_ms',
+        'name': 'finigel_request_latency_ms',
         'metric_type': 'gauge',
         'collect': [
             {'metric_name': 'srv/request_latency_ms.sum', 'label': {'latency': 'sum'}},
@@ -90,7 +76,6 @@ metric_collect = [
             {'metric_name': 'srv/request_latency_ms.p90', 'label': {'latency': 'p90'}},
             {'metric_name': 'srv/request_latency_ms.p95', 'label': {'latency': 'p95'}},
             {'metric_name': 'srv/request_latency_ms.p99', 'label': {'latency': 'p99'}},
-            {'metric_name': 'srv/request_latency_ms.stddev', 'label': {'latency': 'stddev'}},
         ]
     },
 ]
@@ -146,7 +131,7 @@ class TwitterFinagleCollector(object):
         time_labels.update(self._labels)
         time_metric = Metric('scrape_duration', 'service metric', 'gauge')
         time_metric.add_sample(
-            'finagle_exporter_scrape_duration_seconds',
+            'finigel_scrape_duration_seconds',
             value=scrape_duration_seconds,
             labels=time_labels
             )
