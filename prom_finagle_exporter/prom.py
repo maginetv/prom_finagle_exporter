@@ -91,7 +91,7 @@ class TwitterFinagleCollector(object):
         self._metric_collect = metric_collect
 
     def _set_labels(self):
-        self._labels.update({'service': self._service, 'source_type': 'finagle_server'})
+        self._labels.update({'service': self._service})
 
     def filter_exclude(self):
         self._metric_collect = list(
