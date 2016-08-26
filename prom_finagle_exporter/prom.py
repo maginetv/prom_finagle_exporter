@@ -116,9 +116,19 @@ class TwitterFinagleCollector(object):
     def _get_metric_collect(self):
         return self._metric_collect
 
+    def _get_metrics(self):
+        response = requests.get(self._endpoint)
+        response_data = {}
+        if response.status_code == 200:
+            try:
+                response_data = json.loads(response.content.decode('UTF-8'))
+            except ValueError:
+                pass
+        return response_data
+
     def collect(self):
         time_start = time.time()
-        response = json.loads(requests.get(self._endpoint).content.decode('UTF-8'))
+        response = self._get_metrics()
         time_stop = time.time()
 
         scrape_duration_seconds = (time_stop - time_start)
