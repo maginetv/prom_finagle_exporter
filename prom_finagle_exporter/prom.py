@@ -141,16 +141,21 @@ class TwitterFinagleCollector(object):
             self.filter_exclude()
 
         for i in self._metric_collect:
-            if i.get('name'):
-                metric = Metric(i['name'], i['name'], i['metric_type'])
+            metric = Metric(i['name'], i['name'], i['metric_type'])
 
-                for m in i['collect']:
-                    labels = {}
-                    labels.update(self._labels)
-                    labels.update({'original_metric': m['metric_name']})
-                    if m.get('label'):
-                        labels.update(m['label'])
-
-                    metric.add_sample(i['name'], value=response[m['metric_name']], labels=labels)
+            for m in i['collect']:
+                labels = {}
+                labels.update(self._labels)
+                labels.update({'original_metric': m['metric_name']})
+                if m.get('label'):
+                    labels.update(m['label'])
+                try:
+                    metric.add_sample(
+                        i['name'],
+                        value=response[m['metric_name']],
+                        labels=labels
+                        )
+                except KeyError:
+                    pass
 
             yield metric
