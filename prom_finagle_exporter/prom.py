@@ -157,5 +157,7 @@ class TwitterFinagleCollector(object):
                         )
                 except KeyError:
                     pass
-
-            yield metric
+            if metric.samples:
+                yield metric
+            else:
+                pass
