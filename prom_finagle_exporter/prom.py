@@ -126,13 +126,15 @@ class TwitterFinagleCollector(object):
                 pass
         return response_data
 
-    def _gen_response_metrics_dict(self, response_data):
+    def _get_metrics_keys(self):
         metric_keys = []
         for i in self._metric_collect:
             for x in i['collect']:
                 metric_keys.append(x['metric_name'])
+        return metric_keys
 
-        return [{k: v} for (k, v) in response_data.items() if k in metric_keys]
+    def _gen_response_metrics_dict(self, response_data):
+        return [{k: v} for (k, v) in response_data.items() if k in self._get_metrics_keys()]
 
     def collect(self):
         time_start = time.time()
