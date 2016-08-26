@@ -30,7 +30,7 @@ class healthHandler:
 def falcon_app(url, service, port=9161, addr='0.0.0.0', exclude=list):
     api = falcon.API()
     api.add_route('/health', healthHandler())
-    api.add_route('/', metricHandler(url=url, service=service, exclude=exclude))
+    api.add_route('/metrics', metricHandler(url=url, service=service, exclude=exclude))
 
     httpd = simple_server.make_server(addr, port, api)
     httpd.serve_forever()
