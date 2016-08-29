@@ -14,13 +14,6 @@ metric_collect = [
         ]
     },
     {
-        'name': 'finigel_success',
-        'metric_type': 'counter',
-        'collect': [
-            {'metric_name': 'srv/success', 'label': {}},
-        ]
-    },
-    {
         'name': 'finigel_jvm_heap',
         'metric_type': 'gauge',
         'collect': [
