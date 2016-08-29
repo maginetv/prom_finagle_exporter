@@ -13,6 +13,7 @@ RUN apk add --update openssl bash \
     && apk del build-dependencies
 
 ADD . /app/prom-exporter
+RUN python3 setup.py install
 
-EXPOSE 1212
-ENTRYPOINT gunicorn --bind 0.0.0.0:1212 prom_finagle_exporter.app:api
+EXPOSE 9191
+ENTRYPOINT ["finagle-exporter"]
