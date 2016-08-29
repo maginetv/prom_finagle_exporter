@@ -1,3 +1,4 @@
+import uuid
 import click
 from prom_finagle_exporter.handler import falcon_app
 from prom_finagle_exporter.discovery import register_consul
@@ -15,8 +16,9 @@ def cli():
 @click.option('-c', '--consul-host', help='', default='', type=str)
 @click.option('-e', '--exclude', help='exclude metrics named', multiple=True)
 def start(service, url, port, consul_host, exclude):
+    service_id = 'finagle-exporter-'.format(uuid.uuid4().hex)
     if consul_host:
-        register_consul(consul_host, port)
+        register_consul(consul_host, port, service_id=service_id)
 
     falcon_app(url, service, port=port, exclude=list(exclude))
 

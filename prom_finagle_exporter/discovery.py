@@ -21,18 +21,19 @@ def consul_conn_check(host):
         return state
 
 
-def register_consul(host, port):
+def register_consul(host, port, service_id=str):
     service_address = get_ip_address()
     conn = consul_conn_check(host)
     if conn:
         c = consul.Consul(host=host)
         result = c.agent.service.register(
             'finagle_exporter',
+            service_id=service_id,
             address=service_address,
             port=port,
             check={
                 "http": "http://{}:{}/health".format(service_address, port),
-                "interval": "10s",
+                "interval": "5s",
                 "timeout": "1s"
                 }
             )
