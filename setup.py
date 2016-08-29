@@ -16,7 +16,7 @@ class install(_install):
 
 setup(
     name='prom-finagle-exporter',
-    version='0.0.0',
+    version='0.0.1',
     author=u'Infra Squad',
     author_email='infra-squad@magine.com',
     description='prom metrics exporter',
