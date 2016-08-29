@@ -82,10 +82,31 @@ Options:
   --help                  Show this message and exit.
 ```
 
-example 
+#### install local
 ```bash
-$ ./finagle-exporter start \
-    --port 9161 \
-    --url http://example.com:15277/admin/metrics.json \
-    --service api
+python3 setup.py install
+```
+
+run service
+```bash
+$ finagle-exporter start \
+    --service api \
+    --url http://example.com:14056/admin/metrics.json \
+    --port 9191 \
+    --consul-host 127.0.0.1
+```
+
+#### docker build
+```bash
+$ docker build -t finagle-exporter .
+```
+
+run container
+```bash
+$ docker run -it -p 9191:9191 \
+    finagle-exporter start \
+        --service api \
+        --url http://example.com:14056/admin/metrics.json \
+        --port 9191 \
+        --consul-host 127.0.0.1
 ```
