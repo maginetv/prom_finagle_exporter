@@ -32,6 +32,7 @@ def register_consul(host, port, service_id=str):
             address=service_address,
             port=port,
             check={
+                "DeregisterCriticalServiceAfter": "3m",
                 "http": "http://{}:{}/health".format(service_address, port),
                 "interval": "5s",
                 "timeout": "1s"

@@ -1,8 +1,11 @@
 # prom twitter finagle exporter
 prometheus twitter finagle metrics exporter
 
+### consul
+when using consul there is a new checks flag used `DeregisterCriticalServiceAfter` set to 3 min. The way this works is after 3 min that the service have been in a critical state the service and linked checks will be removed. This feature is fist added in consul version `0.7.0` the consul registerfunction will still work but there is no de register done. 
 
-supported metrics to collect
+
+### supported metrics to collect
 ```bash
 srv/requests
 srv/success
