@@ -27,7 +27,7 @@ class healthHandler:
         resp.body = '{"status": "OK"}'
 
 
-def falcon_app(url, service, port=9161, addr='0.0.0.0', exclude=list):
+def falcon_app(url, service, port=9191, addr='0.0.0.0', exclude=list):
     api = falcon.API()
     api.add_route('/health', healthHandler())
     api.add_route('/metrics', metricHandler(url=url, service=service, exclude=exclude))

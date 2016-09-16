@@ -53,7 +53,7 @@ class TestHealthRequest(testing.TestBase):
 class TestCollectRequest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.url = 'http://localhost:9161/metrics'
+        cls.url = 'http://localhost:9191/metrics'
         cls.service = 'name_of_service'
         cls.exclude_list = ['finagle_exporter_http_response_ko']
 
