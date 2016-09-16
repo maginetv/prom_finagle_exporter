@@ -140,3 +140,37 @@ $ docker run -it -p 9191:9191 \
         --port 9191 \
         --consul-host 127.0.0.1
 ```
+
+
+### Contributing
+
+Pull requests are very welcome if you feel like you would like to improve
+or add any functionality. In order to contribute:
+
+- Fork this repository on GitHub
+- Create your own topic branch
+- Once finished, submit a pull request
+
+### License
+
+Released under the [Apache 2.0 license](LICENSE).
+
+```
+Copyright 2016 Magine AB
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
+
+## Author
+
+Alexander Brandstedt (alexander.brandstedt at magine/com)
