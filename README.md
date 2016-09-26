@@ -57,9 +57,6 @@ srv/request_latency_ms.p99
 
 output example of prometheus metrics
 ```bash
-# HELP scrape_duration service metric
-# TYPE scrape_duration gauge
-finigel_scrape_duration_seconds{service="api"} 0.6445069313049316
 # HELP finigel_requests finigel_requests
 # TYPE finigel_requests counter
 finigel_requests{original_metric="srv/requests",service="api"} 529224.0

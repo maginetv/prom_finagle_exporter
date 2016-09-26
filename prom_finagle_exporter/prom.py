@@ -2,7 +2,6 @@ from prometheus_client import Metric
 
 import json
 import requests
-import time
 
 
 metric_collect = [
@@ -115,20 +114,7 @@ class TwitterFinagleCollector(object):
         return [{k: v} for (k, v) in response_data.items() if k in self._get_metrics_keys()]
 
     def collect(self):
-        time_start = time.time()
         response = self._get_metrics()
-        time_stop = time.time()
-
-        scrape_duration_seconds = (time_stop - time_start)
-        time_labels = {}
-        time_labels.update(self._labels)
-        time_metric = Metric('scrape_duration', 'service metric', 'gauge')
-        time_metric.add_sample(
-            'finigel_scrape_duration_seconds',
-            value=scrape_duration_seconds,
-            labels=time_labels
-            )
-        yield time_metric
 
         if self._exclude:
             self.filter_exclude()
